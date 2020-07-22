@@ -10,7 +10,7 @@ def Number_of_digits(number):
 
 	return count
 
-print("Enter a Palindrome number to get next smallest Palindrome number")
+#print("Enter a Palindrome number to get next smallest Palindrome number")
 num = int(input())
 
 #Work only if give number is Palindrome

@@ -77,10 +77,10 @@ class Complex():
 
 
 a = Complex(1,2)
-print("Complex number a is :", end=" ")
+print("Complex number a is :", end = " ")
 a.display()
 b = Complex(2,-3)
-print("Complex number b is :", end=" ")
+print("Complex number b is :", end = " ")
 b.display()
 c = b.add(a)
 print("Complex number c is addition of a and b. The value of c is: ", end=" ") 
