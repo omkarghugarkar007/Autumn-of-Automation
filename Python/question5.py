@@ -8,13 +8,17 @@ def naive_method(days, Price):
 
 	for i in range(days-1):
 
-		Profit = np.zeros(days-1-i)
+		selling_price = 0
 
-		for j in range(1,days-1-i):
+		for j in range(i+1,days):
 
-			Profit[j] = int(Price[i+j]) - int(Price[i])
+			if int(Price[j]) > int(selling_price):
 
-		Local_Max = max(Profit)
+				selling_price = Price[j]
+
+		Profit = int(selling_price) - int(Price[i])
+
+		Local_Max = Profit
 
 		Max_Profit[0,i] = int(Local_Max)
 
