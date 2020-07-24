@@ -5,24 +5,23 @@ from matplotlib import pyplot as plt
 MIN_MATCH_COUNT = 10
 
 img1 = cv2.imread('ball.jpg',0)
-img1 = cv2.resize(img1,(360,360))
-img2 = cv2.imread('sachin.jpg',0) 
+img1 = cv2.resize(img1,(360,360)) 
+
+sift = cv2.xfeatures2d.SIFT_create()
+kp1, des1 = sift.detectAndCompute(img1,None)
+FLANN_INDEX_KDTREE = 0
+index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+search_params = dict(checks = 50)
+flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 cap = cv2.VideoCapture('leomessi.mp4')
 
 while(cap.isOpened()):
 	ret, frame = cap.read()
-
-	sift = cv2.xfeatures2d.SIFT_create()
-	kp1, des1 = sift.detectAndCompute(img1,None)
-	kp2, des2 = sift.detectAndCompute(img2,None)
-
-	FLANN_INDEX_KDTREE = 0
-	index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-	search_params = dict(checks = 50)
+	img2 = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 	
-	flann = cv2.FlannBasedMatcher(index_params, search_params)
-
+	kp2, des2 = sift.detectAndCompute(img2,None)
+	
 	matches = flann.knnMatch(des1,des2,k=2)
 
 	good = []
@@ -41,19 +40,16 @@ while(cap.isOpened()):
 		pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
 		dst = cv2.perspectiveTransform(pts,M)
 
-		frame = cv2.polylines(frame,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+		img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+
+		draw_params = dict(matchColor = (0,255,0), singlePointColor = None,matchesMask = matchesMask,flags = 2)
+
+		img3 = cv2.drawMatches(img1,kp1,frame,kp2,good,None,**draw_params)
+
+		cv2.imshow('frame',img3)
 
 	else:
-		matchesMask = None
-
-	draw_params = dict(matchColor = (0,255,0), 
-                   singlePointColor = None,
-                   matchesMask = matchesMask, 
-                   flags = 2)
-
-	img3 = cv2.drawMatches(img1,kp1,frame,kp2,good,None,**draw_params)
-
-	cv2.imshow('frame',img3)
+		cv2.imshow('frame',frame)
 
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 		break
