@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import imutils
 
 cap = cv2.VideoCapture('leomessi.mp4')
 
@@ -18,7 +17,7 @@ while(cap.isOpened()):
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
-    cnts,hierarchy= cv2.findContours(mask, 1, 2)
+    cnts = cv2.findContours(mask, 1, 2)[0]
 
     if len(cnts) > 0:
 
